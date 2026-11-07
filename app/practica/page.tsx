@@ -19,7 +19,7 @@ return {title:{absolute:MESSAGES[variant].title},description:MESSAGES[variant].d
 export default async function Practica({searchParams}:Props){
 const p=await searchParams;const {variant,isPreview,crawler}=await context(p.preview);
 const h=await headers();const visitor=h.get("x-tn-visitor"),session=h.get("x-tn-session");
-const databaseReady = Boolean(process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:")) || !process.env.VERCEL;
+const databaseReady = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY) || !process.env.VERCEL;
 if(databaseReady&&!isPreview&&!crawler&&validVisitor(visitor)&&validVisitor(session))await recordImpression(visitor,variant,session);
 const copy=MESSAGES[variant];
 return <main><nav className="nav"><Link href="/" className="brand">TALLER <b>NORTE</b><span>↗</span></Link><Link href="/bitacora">Bitácora del experimento ↗</Link></nav>

@@ -12,7 +12,7 @@ return <div className="table-wrap"><table><thead><tr><th>Variante</th><th>Impres
 </tbody></table></div>;
 }
 export default async function Bitacora(){
-const databaseReady = Boolean(process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:")) || !process.env.VERCEL;
+const databaseReady = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY) || !process.env.VERCEL;
 const stats=databaseReady?await loadStats():null;
 return <main className="dashboard"><nav className="nav"><Link href="/" className="brand">TALLER <b>NORTE</b><span>↗</span></Link><Link href="/practica">Volver a la landing ↗</Link></nav>
 <header className="dashboard-header"><p className="eyebrow">LABORATORIO 01 / EXPERIMENTO A/B</p><h1>Bitácora del<br/>experimento<span>.</span></h1><p>Una URL canónica, dos mensajes y un registro sin duplicaciones.</p></header>

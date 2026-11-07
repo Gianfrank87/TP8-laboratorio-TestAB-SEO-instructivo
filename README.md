@@ -15,3 +15,6 @@ SQLite local se crea automáticamente como local.db. Para desplegar en plataform
 Ejecutar npm test. La asignación utiliza FNV-1a y cookies httpOnly, el preview no afecta la asignación y lleva noindex, los eventos se almacenan en la base y se deduplican.
 
 El informe está en INFORME.md. La bitácora calcula A = 7,50%, B = 13,14% y la diferencia de 5,64 pp sin valores de tasa escritos manualmente.
+
+## Persistencia en producción
+El deploy usa Supabase Postgres mediante funciones RPC. Configurar SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY en el servidor. En desarrollo sin estas variables se utiliza SQLite local.
