@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Home(){return <main className="home"><p className="eyebrow">PROGRAMACIÓN AVANZADA · LABORATORIO 01</p><h1>Taller Norte<span>.</span></h1><p>Una landing, dos mensajes, una sola URL indexable.</p><div className="links"><Link className="primary" href="/practica">Ver la práctica ↗</Link><Link className="secondary" href="/bitacora">Ver la bitácora ↗</Link></div></main>;}
