@@ -2,7 +2,11 @@ name: Verificar entrega
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'capturas/**'
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   verificar:
     runs-on: ubuntu-latest
@@ -17,20 +21,23 @@ jobs:
         run: npm test
       - name: Compilar aplicación
         run: npm run build
-      - name: Preparar captura del caso de prueba
+      - name: Capturar landing y bitácora
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-          (npm run start > /tmp/taller-norte.log 2>&1 & echo $! > /tmp/taller-norte.pid)
-          for i in $(seq 1 40); do
-            if curl --fail --silent http://localhost:3000/bitacora > /dev/null; then break; fi
-            sleep 2
-          done
           node scripts/capture.mjs
         env:
-          DATABASE_URL: file:local.db
-          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          CAPTURE_BASE_URL: https://tp8-laboratorio-testab-seo-instruct.vercel.app
+      - name: Subir capturas al repositorio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add capturas/landing.png capturas/bitacora.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Agregar capturas de la landing y la bitácora"
+            git push origin HEAD:main
+          fi
       - uses: actions/upload-artifact@v4
         with:
-          name: captura-bitacora
-          path: evidencia/bitacora.png
+          name: capturas-tp8
+          path: capturas/*.png
