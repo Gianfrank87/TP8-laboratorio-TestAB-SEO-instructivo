@@ -19,11 +19,13 @@ return {title:{absolute:MESSAGES[variant].title},description:MESSAGES[variant].d
 export default async function Practica({searchParams}:Props){
 const p=await searchParams;const {variant,isPreview,crawler}=await context(p.preview);
 const h=await headers();const visitor=h.get("x-tn-visitor"),session=h.get("x-tn-session");
-if(!isPreview&&!crawler&&validVisitor(visitor)&&validVisitor(session))await recordImpression(visitor,variant,session);
+const databaseReady = Boolean(process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith("file:")) || !process.env.VERCEL;
+if(databaseReady&&!isPreview&&!crawler&&validVisitor(visitor)&&validVisitor(session))await recordImpression(visitor,variant,session);
 const copy=MESSAGES[variant];
 return <main><nav className="nav"><Link href="/" className="brand">TALLER <b>NORTE</b><span>↗</span></Link><Link href="/bitacora">Bitácora del experimento ↗</Link></nav>
 <section className="hero"><div className="hero-copy"><p className="eyebrow">OFICIOS REALES · INSCRIPCIONES ABIERTAS</p><span className="tag">{variant==="a"?"APRENDER HACIENDO":"ÚLTIMOS CUPOS DE ABRIL"}</span><h1>{copy.heading}</h1><p className="intro">{copy.lead}</p><div className="info"><div><strong>14 ABR</strong><small>Próximo inicio</small></div><div><strong>8 SEM</strong><small>Duración</small></div><div><strong>12</strong><small>Por grupo</small></div></div>
-{isPreview?<div className="primary inactive">{copy.cta} · Vista previa</div>:<form action={registerConversion}><button className="primary" type="submit">{copy.cta} ↗</button></form>}
+{isPreview?<div className="primary inactive">{copy.cta} · Vista previa</div>:databaseReady?<form action={registerConversion}><button className="primary" type="submit">{copy.cta} ↗</button></form>:<div className="primary inactive">Registro temporalmente no disponible</div>}
+{!databaseReady&&<p role="status" className="note">El experimento está pendiente de conectar su base de datos persistente. No se están registrando eventos.</p>}
 {p.registrado==="1"&&!isPreview&&<p role="status" className="success">Tu interés quedó registrado.</p>}
 <p className="note">Cupos limitados por grupo. Sin compromiso de inscripción.</p></div>
 <aside className="hero-art"><span>ESCUELA DE OFICIOS / EDICIÓN ABRIL</span><div className="art-lines"><span>HACÉ.</span><span>APRENDÉ.</span><span>CRECÉ.</span></div><span>FORMACIÓN PARA EL TRABAJO · 01/03</span></aside></section>
